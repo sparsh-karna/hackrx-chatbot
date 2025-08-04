@@ -1,0 +1,15 @@
+{
+  "timestamp": "2025-08-05T01:45:50.477850",
+  "total_tests": 7,
+  "passed_tests": 7,
+  "test_results": {
+    "Configuration": true,
+    "Environment Setup": true,
+    "Text Chunking": true,
+    "Document Processing": true,
+    "RAG Pipeline Init": true,
+    "API Server": true,
+    "Full Integration": true
+  },
+  "total_time_seconds": 42.66426706314087
+}
