@@ -17,17 +17,15 @@ class RAGPipeline:
         self.document_processor = DocumentProcessor()
         self.text_chunker = TextChunker(
             chunk_size=settings.chunk_size,
-            chunk_overlap=settings.chunk_overlap,
-            embedding_model=settings.embedding_model
+            chunk_overlap=settings.chunk_overlap
         )
         self.vector_store = VectorStore(
-            api_key=settings.pinecone_api_key,
-            environment=settings.pinecone_environment,
-            index_name=settings.pinecone_index_name,
+            index_path=settings.faiss_index_path,
+            document_store_path=settings.faiss_document_store_path,
             dimension=self.text_chunker.get_embedding_dimension()
         )
         self.query_processor = QueryProcessor(
-            api_key=settings.google_api_key
+            api_key=settings.openai_api_key
         )
         
         self._initialized = False

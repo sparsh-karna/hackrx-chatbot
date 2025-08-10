@@ -1,26 +1,33 @@
 import logging
 from typing import List, Dict, Any, Optional
-import google.generativeai as genai
-from langchain.schema import Document
+from langchain_openai import ChatOpenAI
+from langchain_core.prompts import ChatPromptTemplate
+from langchain_core.messages import SystemMessage, HumanMessage
+from langchain_core.documents import Document
 import json
 import re
 
 logger = logging.getLogger(__name__)
 
 class QueryProcessor:
-    """Handles query processing and answer generation using Gemini"""
+    """Handles query processing and answer generation using OpenAI via LangChain"""
     
-    def __init__(self, api_key: str, model_name: str = "gemini-2.0-flash"):
+    def __init__(self, api_key: str, model_name: str = "gpt-4o-mini-2024-07-18"):
         self.api_key = api_key
         self.model_name = model_name
         
-        # Configure Gemini
-        genai.configure(api_key=api_key)
-        self.model = genai.GenerativeModel(model_name)
+        # Configure OpenAI via LangChain
+        self.model = ChatOpenAI(
+            api_key=api_key,
+            model_name=model_name,
+            temperature=0,  # Low temperature for factual accuracy
+            max_tokens=300,
+            request_timeout=25
+        )
         
         # Define system prompt for better context understanding
         self.system_prompt = """
-You are an expert document analysis AI specializing in insurance, legal, HR, and compliance domains.
+You are an expert document analysis AI.
 
 Your task is to analyze document chunks and provide accurate, contextual answers to specific queries.
 
@@ -37,7 +44,7 @@ Format your response as a clear, direct answer without preambles like "Based on 
 """
     
     async def process_query(self, query: str, relevant_chunks: List[Dict[str, Any]], 
-                          max_tokens: int = 4096) -> Dict[str, Any]:
+                          max_tokens: int = 300) -> Dict[str, Any]:
         """
         Process query with relevant document chunks and generate answer
         
@@ -127,22 +134,19 @@ ANSWER:"""
         return prompt
     
     async def _generate_response(self, prompt: str, max_tokens: int) -> str:
-        """Generate response using Gemini"""
+        """Generate response using OpenAI via LangChain"""
         try:
-            # Configure generation parameters
-            generation_config = genai.types.GenerationConfig(
-                max_output_tokens=max_tokens,
-                temperature=0.1,  # Low temperature for factual accuracy
-                top_p=0.9,
-                top_k=40
+            # Create messages for the chat model
+            system_message = SystemMessage(content=self.system_prompt)
+            human_message = HumanMessage(content=prompt)
+            
+            # Generate response using LangChain's OpenAI chat model
+            response = await self.model.ainvoke(
+                [system_message, human_message],
+                {"max_tokens": max_tokens}
             )
             
-            response = self.model.generate_content(
-                prompt,
-                generation_config=generation_config
-            )
-            
-            return response.text
+            return response.content
             
         except Exception as e:
             logger.error(f"Error generating response: {str(e)}")

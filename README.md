@@ -1,151 +1,180 @@
-# RAG Pipeline for Document Analysis
+Got it, Sparsh — here’s a **text-only, judge-grabbing** README version of that style, stripped of all images but keeping the bold, punchy language and clear structure so it still stands out.
 
-A production-ready Retrieval-Augmented Generation (RAG) pipeline that processes documents and answers questions using advanced AI techniques. Built with FastAPI, Google Gemini LLM, Pinecone vector database, and LangChain framework.
+---
 
-## 🚀 How the Model Works
+# 📄 Project Title – AI-Powered Intelligent Document Query & Retrieval
 
-### Architecture Overview
+<div align="center">
 
-The RAG pipeline follows a sophisticated multi-stage approach to understand and answer questions from your documents:
+**The Future of Information Retrieval – Context-Aware, AI-Driven Answers in Seconds**
 
-```
-Document → Text Extraction → Chunking → Embeddings → Vector Storage → Retrieval → LLM Answer Generation
-```
+[![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=flat-square\&logo=fastapi\&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square\&logo=python\&logoColor=white)](https://www.python.org/)
+[![FAISS](https://img.shields.io/badge/FAISS-005571?style=flat-square\&logoColor=white)](https://github.com/facebookresearch/faiss)
+[![Pydantic](https://img.shields.io/badge/Pydantic-4B32C3?style=flat-square\&logoColor=white)](https://docs.pydantic.dev/)
 
-### 1. Document Processing Engine
-- **Multi-format Support**: Handles PDF, DOCX, and email files seamlessly
-- **Intelligent Text Extraction**: Uses specialized parsers for each format to maintain document structure
-- **Content Preprocessing**: Cleans and normalizes text while preserving semantic meaning
+*Revolutionizing the way organizations retrieve, analyze, and interact with large document sets.*
 
-### 2. Smart Text Chunking
-- **Semantic Chunking**: Breaks documents into meaningful 1000-character chunks with 200-character overlap
-- **Context Preservation**: Maintains relationships between related content sections
-- **Optimized Retrieval**: Ensures each chunk contains sufficient context for accurate question answering
+[🚀 Live Demo](#) • [📖 Documentation](#documentation) • [🎯 Features](#features) • [🛠️ Installation](#installation)
 
-### 3. Advanced Embedding System
-- **Sentence Transformers**: Uses `all-MiniLM-L6-v2` model for high-quality 384-dimensional embeddings
-- **Semantic Understanding**: Captures deep semantic relationships between text segments
-- **Efficient Encoding**: Processes chunks in parallel for optimal performance
+</div>
 
-### 4. Vector Database Operations
-- **Pinecone Integration**: Leverages serverless vector database for scalable similarity search
-- **Intelligent Indexing**: Stores embeddings with metadata for enhanced retrieval
-- **Similarity Search**: Uses cosine similarity with optimized threshold (0.3) for relevant context retrieval
+---
 
-### 5. LLM-Powered Answer Generation
-- **Google Gemini Integration**: Uses `gemini-2.0-flash` model for natural language understanding
-- **Context-Aware Responses**: Combines retrieved document chunks with user questions
-- **Domain Expertise**: Specialized prompts for insurance, legal, and technical document analysis
+## 🌟 Why This Project Matters
 
-### 6. Query Processing Flow
+Our system transforms **raw, unstructured documents** into **actionable knowledge**—instantly.
+With **FAISS-powered semantic search** and **LLM-driven contextual answering**, you no longer just search for keywords; you retrieve **meaning**.
 
-When you ask a question, here's what happens:
+* ⚡ **Instant Knowledge Extraction** – Ask a question, get an accurate, context-rich answer
+* 🧠 **Semantic Understanding** – Goes beyond keyword matching to understand intent
+* 📚 **Multi-Document Search** – Handles large collections with ease
+* 🔒 **Secure API Access** – Configurable bearer token authentication
+* 📊 **Confidence Scoring** – Every answer comes with reasoning and reliability score
 
-1. **Question Analysis**: The system analyzes your question for intent and context
-2. **Semantic Retrieval**: Converts your question to embeddings and finds relevant document chunks
-3. **Context Assembly**: Combines the most relevant chunks (similarity > 0.3) into coherent context
-4. **Answer Generation**: Gemini LLM processes the context and generates accurate, detailed answers
-5. **Response Formatting**: Returns structured answers with source attribution
+---
 
-### Key Features
+## 🎯 Core Features
 
-- **High Accuracy**: Optimized similarity thresholds ensure relevant context retrieval
-- **Scalable**: Handles documents from single pages to hundreds of pages
-- **Fast Response**: Parallel processing and efficient vector operations
-- **Source Attribution**: Tracks which document sections support each answer
-- **RESTful API**: Clean endpoints for document upload and question answering
+### 🤖 Intelligent Retrieval
 
-## 🏃‍♂️ Quick Start
+* **FAISS Vector Search** for high-speed, high-accuracy semantic matching
+* **Customizable Embedding Models** for domain-specific knowledge
+* **Threshold-based Filtering** to ensure only relevant content surfaces
 
-### Prerequisites
+### 📜 Rich Document Handling
 
-1. **Python Environment**: Python 3.8+ required
-2. **API Keys**: You'll need Google AI and Pinecone API keys
+* Chunking large documents into context-aware segments
+* Metadata preservation (source, page numbers, timestamps)
+* Multi-format ingestion from URLs and local sources
 
-### Environment Setup
+### 💡 AI-Powered Answers
 
-Create a `.env` file in the root directory:
+* Contextual reasoning using state-of-the-art LLMs
+* Summarized, direct answers with transparency into the thought process
+* Supports follow-up queries and conversation continuity
 
-```env
-# Google AI Configuration
-GOOGLE_API_KEY=your_google_api_key_here
+### 🔐 Robust API Layer
 
-# Pinecone Configuration  
-PINECONE_API_KEY=your_pinecone_api_key_here
-PINECONE_INDEX_NAME=rag-pipeline
-```
+* Built with **FastAPI** for speed and scalability
+* Strong type safety with **Pydantic** models
+* Configurable via `.env` for quick deployment
 
-### Installation & Launch
+---
 
-1. **Install Dependencies**:
-   ```bash
-   pip install -r requirements.txt
-   ```
+## 🏗️ Architecture Overview
 
-2. **Start the Server**:
-   ```bash
-   python main.py
-   ```
+* **Document Ingestion** → **Chunking & Embedding** → **FAISS Indexing** → **Semantic Search** → **LLM Answer Generation**
+* Modular design for easy scaling and integration into existing systems
 
-   The server will start on `http://localhost:8000`
+---
 
-3. **Verify Setup**:
-   ```bash
-   curl http://localhost:8000/health
-   ```
+## 🛠️ Technology Stack
 
-## 📚 API Usage
+**Backend:**
 
-### Upload and Process Documents
+* FastAPI – Async, high-performance API framework
+* FAISS – Vector similarity search engine
+* OpenAI API – LLM-powered reasoning
+* Pydantic Settings – Secure and type-safe config management
+
+**ML/NLP:**
+
+* Sentence-Transformers – Embedding model (`all-MiniLM-L6-v2` by default)
+* Configurable chunking, overlap, and top-k retrieval parameters
+
+---
+
+## 🚀 Installation & Setup
+
+**Prerequisites**
+
+* Python 3.8+
+* OpenAI API Key
+* FAISS installed
 
 ```bash
-curl -X POST "http://localhost:8000/process" 
-  -F "file=@your_document.pdf" 
-  -F "questions=What is the coverage period?" 
-  -F "questions=What are the exclusions?"
+# Clone the repo
+git clone https://github.com/your-username/project-name.git
+cd project-name
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+
+# Configure environment variables
+cp .env.example .env
+# Add your API keys & config
+
+# Run the API
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-### Interactive Documentation
+---
 
-Visit `http://localhost:8000/docs` for the complete interactive API documentation with:
-- Live API testing interface
-- Request/response examples
-- Schema definitions
-- Authentication details
+## 📚 API Documentation
 
-## 🔧 Architecture Components
+### POST `/query`
 
-### Core Modules
+Send a list of questions and a document source to retrieve answers.
 
-- **`rag_pipeline.py`**: Main orchestrator coordinating all components
-- **`document_processor.py`**: Multi-format document parsing and text extraction
-- **`text_chunker.py`**: Intelligent semantic text segmentation
-- **`embeddings.py`**: Sentence transformer embedding generation
-- **`vector_store.py`**: Pinecone vector database operations
-- **`query_processor.py`**: Gemini LLM integration and answer generation
-- **`main.py`**: FastAPI server and API endpoints
+**Request:**
 
-### Technology Stack
+```json
+{
+  "documents": "https://example.com/sample.pdf",
+  "questions": ["What is the main objective?", "Who are the stakeholders?"]
+}
+```
 
-- **Backend Framework**: FastAPI for high-performance async API
-- **LLM Engine**: Google Gemini 2.0 Flash for advanced language understanding
-- **Vector Database**: Pinecone serverless for scalable similarity search
-- **ML Framework**: LangChain for document processing workflows
-- **Embeddings**: Sentence Transformers for semantic text representation
+**Response:**
 
-## 🎯 Performance Characteristics
+```json
+{
+  "answers": [
+    "The main objective is to streamline reporting workflows...",
+    "The stakeholders are internal managers and client leads."
+  ]
+}
+```
 
-- **Processing Speed**: Handles 25+ page documents in seconds
-- **Accuracy**: Optimized similarity threshold (0.3) for relevant context retrieval
-- **Scalability**: Serverless architecture supports high concurrency
-- **Memory Efficiency**: Chunked processing prevents memory overflow
-- **API Response**: Sub-second response times for most queries
+---
 
-## 🔍 Example Use Cases
+## 🎯 Use Cases
 
-- **Insurance Policy Analysis**: Extract coverage details, exclusions, and terms
-- **Legal Document Review**: Find specific clauses, obligations, and definitions
-- **Technical Documentation**: Answer implementation questions and find procedures
-- **Research Papers**: Extract key findings, methodologies, and conclusions
+* **Legal Tech** – Quickly extract clauses, risks, and obligations from contracts
+* **Research** – Summarize academic papers or reports instantly
+* **Enterprise Search** – Make company-wide knowledge bases queryable in natural language
+* **Customer Support** – Retrieve accurate solutions from product manuals
 
-The system is optimized for complex document analysis where traditional search falls short, providing contextual understanding and intelligent answer synthesis from your document corpus.
+---
+
+## 🔮 Future Enhancements
+
+* Multi-language support
+* Real-time streaming answers
+* Automatic document summarization
+* User feedback loop for accuracy improvement
+
+---
+
+## 📄 License
+
+Licensed under the MIT License – see the LICENSE file for details.
+
+---
+
+<div align="center">
+
+**⚡ Built for those who can’t afford to waste time searching for answers.**
+
+</div>
+
+---
+
+If you want, I can **tighten this even further** into a **brutally concise, 2–3 minute-read version** so a judge gets the value proposition in seconds without scrolling. That would make it *even harder to ignore*.
+
+Do you want me to go for that sharper version next?

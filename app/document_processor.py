@@ -15,22 +15,32 @@ class DocumentProcessor:
     """Handles processing of different document types"""
     
     def __init__(self):
-        self.supported_formats = ['.pdf', '.docx', '.doc', '.eml', '.msg']
-    
-    async def process_document_from_url(self, document_url: str) -> Dict[str, Any]:
-        """
-        Download and process document from URL
-        
-        Args:
-            document_url: URL to the document
-            
-        Returns:
-            Dict containing extracted text and metadata
-        """
+        self.supported_formats = ['.pdf', '.docx', '.doc', '.eml', '.msg', '.xlsx', '.csv', '.pptx']
+
+
+    async def scrape_website(self, url: str, selector: str = None) -> Dict[str, Any]:
+        """Scrape a website and return text content (optionally using a CSS selector)"""
         try:
-            # Download document
-            response = requests.get(document_url, timeout=30)
+            response = requests.get(url, timeout=30)
             response.raise_for_status()
+            soup = BeautifulSoup(response.content, 'html.parser')
+            if selector:
+                elements = soup.select(selector)
+                text = '\n'.join([el.get_text(separator=' ', strip=True) for el in elements])
+            else:
+                text = soup.get_text(separator=' ', strip=True)
+            return {
+                'content': text,
+                'metadata': {
+                    'source': url,
+                    'type': 'web',
+                    'selector': selector or 'all',
+                    'length': len(text)
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error scraping website {url}: {str(e)}")
+            raise
             
             # Determine file type from URL or content type
             content_type = response.headers.get('content-type', '')
@@ -41,14 +51,104 @@ class DocumentProcessor:
                 return await self._process_pdf(response.content, document_url)
             elif 'word' in content_type or url_path.endswith(('.docx', '.doc')):
                 return await self._process_docx(response.content, document_url)
+            elif url_path.endswith('.xlsx') or 'excel' in content_type:
+                return await self._process_xlsx(response.content, document_url)
+            elif url_path.endswith('.csv') or 'csv' in content_type:
+                return await self._process_csv(response.content, document_url)
+            elif url_path.endswith('.pptx') or 'powerpoint' in content_type:
+                return await self._process_pptx(response.content, document_url)
             elif 'email' in content_type or url_path.endswith(('.eml', '.msg')):
                 return await self._process_email(response.content, document_url)
+            elif 'html' in content_type or url_path.endswith('.html'):
+                # General website scraping
+                return await self.scrape_website(document_url)
             else:
                 # Try to extract as text
                 return await self._process_text(response.text, document_url)
-                
+    async def _process_xlsx(self, content: bytes, source_url: str) -> Dict[str, Any]:
+        """Extract text from Excel XLSX file (all sheets)"""
+        try:
+            import openpyxl
+            from tempfile import NamedTemporaryFile
+            with NamedTemporaryFile(delete=True, suffix='.xlsx') as tmp:
+                tmp.write(content)
+                tmp.flush()
+                wb = openpyxl.load_workbook(tmp.name, data_only=True)
+                text_content = ""
+                sheets_info = []
+                for sheet in wb.worksheets:
+                    sheet_text = []
+                    for row in sheet.iter_rows(values_only=True):
+                        row_text = ' '.join([str(cell) if cell is not None else '' for cell in row])
+                        sheet_text.append(row_text)
+                    sheet_text_str = '\n'.join(sheet_text)
+                    text_content += f"\n\n--- Sheet: {sheet.title} ---\n{sheet_text_str}"
+                    sheets_info.append({'sheet': sheet.title, 'rows': len(sheet_text)})
+            return {
+                'content': text_content,
+                'metadata': {
+                    'source': source_url,
+                    'type': 'xlsx',
+                    'sheets': [s['sheet'] for s in sheets_info],
+                    'sheets_info': sheets_info
+                }
+            }
         except Exception as e:
-            logger.error(f"Error processing document from {document_url}: {str(e)}")
+            logger.error(f"Error processing XLSX: {str(e)}")
+            raise
+
+    async def _process_csv(self, content: bytes, source_url: str) -> Dict[str, Any]:
+        """Extract text from CSV file"""
+        try:
+            import csv
+            import io as _io
+            text_content = ""
+            reader = csv.reader(_io.StringIO(content.decode('utf-8')))
+            rows = list(reader)
+            for row in rows:
+                text_content += ', '.join(row) + '\n'
+            return {
+                'content': text_content,
+                'metadata': {
+                    'source': source_url,
+                    'type': 'csv',
+                    'rows': len(rows)
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error processing CSV: {str(e)}")
+            raise
+
+    async def _process_pptx(self, content: bytes, source_url: str) -> Dict[str, Any]:
+        """Extract text from PowerPoint PPTX file (all slides)"""
+        try:
+            from pptx import Presentation
+            from tempfile import NamedTemporaryFile
+            with NamedTemporaryFile(delete=True, suffix='.pptx') as tmp:
+                tmp.write(content)
+                tmp.flush()
+                prs = Presentation(tmp.name)
+                text_content = ""
+                slides_info = []
+                for i, slide in enumerate(prs.slides):
+                    slide_text = []
+                    for shape in slide.shapes:
+                        if hasattr(shape, "text"):
+                            slide_text.append(shape.text)
+                    slide_text_str = '\n'.join(slide_text)
+                    text_content += f"\n\n--- Slide {i+1} ---\n{slide_text_str}"
+                    slides_info.append({'slide': i+1, 'length': len(slide_text_str)})
+            return {
+                'content': text_content,
+                'metadata': {
+                    'source': source_url,
+                    'type': 'pptx',
+                    'slides': len(slides_info),
+                    'slides_info': slides_info
+                }
+            }
+        except Exception as e:
+            logger.error(f"Error processing PPTX: {str(e)}")
             raise
     
     async def _process_pdf(self, content: bytes, source_url: str) -> Dict[str, Any]:

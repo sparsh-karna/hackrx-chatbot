@@ -2,13 +2,12 @@ from pydantic_settings import BaseSettings
 from typing import Optional
 
 class Settings(BaseSettings):
-    # Google AI Configuration
-    google_api_key: str
+    # OpenAI Configuration
+    openai_api_key: str
     
-    # Pinecone Configuration
-    pinecone_api_key: str
-    pinecone_environment: str
-    pinecone_index_name: str = "hackrx-documents"
+    # FAISS Configuration
+    faiss_index_path: str = "data/faiss_index"
+    faiss_document_store_path: str = "data/document_store.json"
     
     # API Configuration
     api_host: str = "0.0.0.0"
@@ -17,13 +16,13 @@ class Settings(BaseSettings):
     
     # Model Configuration
     embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
-    chunk_size: int = 1000
-    chunk_overlap: int = 200
-    max_tokens: int = 4096
+    chunk_size: int = 1500
+    chunk_overlap: int = 300
+    max_tokens: int = 300
     
     # Vector Store Configuration
     similarity_threshold: float = 0.7
-    top_k_results: int = 10
+    top_k_results: int = 3
     
     # Logging
     log_level: str = "INFO"

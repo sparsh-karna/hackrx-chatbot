@@ -1,17 +1,18 @@
 import logging
 from typing import List, Dict, Any
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.schema import Document
-from sentence_transformers import SentenceTransformer
+from langchain_core.documents import Document
+from langchain_openai import OpenAIEmbeddings
 import numpy as np
 import tiktoken
+from app.config import settings
 
 logger = logging.getLogger(__name__)
 
 class TextChunker:
     """Handles text chunking and embedding generation"""
     
-    def __init__(self, chunk_size: int = 1000, chunk_overlap: int = 200, embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"):
+    def __init__(self, chunk_size: int = 1000, chunk_overlap: int = 200):
         self.chunk_size = chunk_size
         self.chunk_overlap = chunk_overlap
         self.text_splitter = RecursiveCharacterTextSplitter(
@@ -21,8 +22,11 @@ class TextChunker:
             separators=["\n\n", "\n", " ", ""]
         )
         
-        # Initialize embedding model
-        self.embedding_model = SentenceTransformer(embedding_model)
+        # Configure OpenAI embeddings via LangChain
+        self.embeddings = OpenAIEmbeddings(
+            openai_api_key=settings.openai_api_key,
+            model="text-embedding-3-small"
+        )
         
         # Initialize tokenizer for token counting
         try:
@@ -75,7 +79,7 @@ class TextChunker:
     
     def generate_embeddings(self, texts: List[str]) -> np.ndarray:
         """
-        Generate embeddings for list of texts
+        Generate embeddings for list of texts using LangChain's OpenAI embedding integration
         
         Args:
             texts: List of text strings
@@ -84,20 +88,17 @@ class TextChunker:
             NumPy array of embeddings
         """
         try:
-            embeddings = self.embedding_model.encode(
-                texts,
-                convert_to_numpy=True,
-                show_progress_bar=False
-            )
-            return embeddings
+            # Use LangChain's OpenAI embeddings model
+            embeddings = self.embeddings.embed_documents(texts)
+            return np.array(embeddings)
             
         except Exception as e:
             logger.error(f"Error generating embeddings: {str(e)}")
             raise
     
     def get_embedding_dimension(self) -> int:
-        """Get the dimension of the embedding model"""
-        return self.embedding_model.get_sentence_embedding_dimension()
+        """Get the dimension of the embedding model (OpenAI's text-embedding-3-large is 3072)"""
+        return 3072
     
     def estimate_tokens(self, text: str) -> int:
         """Estimate token count for text"""
