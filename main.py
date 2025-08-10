@@ -174,7 +174,7 @@ async def run_query(
             detail=f"Internal server error: {str(e)}"
         )
 
-@app.post("/api/v1/hackrx/test")
+@app.post("/api/v1/hackrx/run")
 async def test_endpoint(
     request: QueryRequest,
     _: str = Depends(verify_token)
