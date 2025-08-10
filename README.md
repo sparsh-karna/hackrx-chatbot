@@ -1,7 +1,3 @@
-Got it, Sparsh — here’s a **text-only, judge-grabbing** README version of that style, stripped of all images but keeping the bold, punchy language and clear structure so it still stands out.
-
----
-
 # Project Title – AI-Powered Intelligent Document Query & Retrieval
 
 <div align="center">
@@ -172,9 +168,3 @@ Licensed under the MIT License – see the LICENSE file for details.
 **⚡ Built for those who can’t afford to waste time searching for answers.**
 
 </div>
-
----
-
-If you want, I can **tighten this even further** into a **brutally concise, 2–3 minute-read version** so a judge gets the value proposition in seconds without scrolling. That would make it *even harder to ignore*.
-
-Do you want me to go for that sharper version next?
