@@ -2,7 +2,7 @@ Got it, Sparsh — here’s a **text-only, judge-grabbing** README version of th
 
 ---
 
-# 📄 Project Title – AI-Powered Intelligent Document Query & Retrieval
+# Project Title – AI-Powered Intelligent Document Query & Retrieval
 
 <div align="center">
 
